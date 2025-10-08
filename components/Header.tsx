@@ -46,7 +46,7 @@ const Header = ({subHeader,title,userImg}:ShareHeadderPrpos) => {
             <div className='search relative max-w-[500px] w-full'>
                 <input className='border border-gray-20 py-2 pl-8 pr-5 text-dark-100 text-sm font-normal placeholder:text-gray-100 w-full rounded-[18px] focus:outline-pink-100 hover:border-pink-100
 ' type="text" placeholder='Search for videos,tag,folders' />
-                <Image src="assets/icons/search.svg" alt="search" height={16} width={16}></Image>            
+                <Image src="/assets/icons/search.svg" alt="search" height={16} width={16}></Image>            
             </div>
             <Dropdown/>
 
