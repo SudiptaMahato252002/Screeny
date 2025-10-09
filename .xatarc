@@ -1,0 +1,6 @@
+{
+  "databaseURL": "https://Sudipto-Mahato-s-workspace-dev9lu.us-east-1.xata.sh/db/JSM_SCREENY",
+  "codegen": {
+    "output": "src/xata.ts"
+  }
+}
