@@ -1,9 +1,16 @@
+'use client'
 import Link from 'next/link'
 import Image from 'next/image'
 import React from 'react'
+import { authClientt } from '@/lib/auth-client'
 
 const page = () => {
-  return (
+    const handleSignIn=async()=>{
+        return await authClientt.signIn.social({provider:'google'})
+    }
+
+
+    return (
     <main className='sign-in'>
         <aside className='testimonial'>
             <Link href="/">
@@ -41,7 +48,7 @@ const page = () => {
                     Create and share your very first <span>Screeny video</span> in no
                     time!
                 </p>
-                <button className='hover:bg-pink-100'>    
+                <button className='hover:bg-pink-100' onClick={handleSignIn}>    
                     <Image src="/assets/icons/google.svg" alt="Google-icon" width={22} height={22}>
                     </Image>
                     <span>Sign-in with google</span>
