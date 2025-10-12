@@ -1,5 +1,11 @@
 import { VideoCardProps } from "@/components/VideoCard";
 
+
+export const MAX_VIDEO_SIZE=500*1024*1024
+export const MAX_THUMBNAIL_SIZE=10*1024*1024
+
+
+
 export const ICONS={
     record:"/assets/icons/record.svg",
     close:"/assets/icons/close.svg",
