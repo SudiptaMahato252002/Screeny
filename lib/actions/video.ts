@@ -8,7 +8,7 @@ import { db } from "@/drizzle/db"
 import { videos } from "@/drizzle/schema"
 import { revalidatePath } from "next/cache"
 
-type Visibility="public"|"private"
+type Visibility="public"|"private"|string
 
 
 interface VideoDetails
@@ -17,7 +17,6 @@ interface VideoDetails
     title:string,
     description:string,
     thumbnailUrl:string,
-    tags:string|string[],
     visibility:Visibility
     duration:number|null
 
@@ -39,7 +38,7 @@ interface BunnyVideoRepsone
     encodeProgress?:number
 }
 //helper fucntions
-export const revalidatePaths=(paths:string[])=>{
+export const revalidatePaths=async(paths:string[])=>{
 
     paths.forEach((path)=>{
         revalidatePath(path)

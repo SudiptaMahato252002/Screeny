@@ -2,10 +2,15 @@
 import FileInput from '@/components/FileInput'
 import FormField from '@/components/FormField'
 import { MAX_THUMBNAIL_SIZE, MAX_VIDEO_SIZE } from '@/constants'
+import { getVideoUploadUrl, saveVideoDetails, thumbnailUploadUrl } from '@/lib/actions/video'
 import { useFileInput } from '@/lib/hooks/useFileInput'
-import React, { ChangeEvent, FormEvent, useState } from 'react'
+import { duration } from 'drizzle-orm/gel-core'
+import { useRouter } from 'next/navigation'
+import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react'
 
 const page = () => {
+
+    const router=useRouter()
     const [error,setError]=useState<string|null>(null);
     const [isSubmittting,setIsSubmitting]=useState(false)
     const [formData,setFormData]=useState({
@@ -13,12 +18,42 @@ const page = () => {
         description:"",
         visibility:"public",
     }) 
+
+    const [videoDuration,setVideouration]=useState<number|null>(null);
+    
+    const video=useFileInput(MAX_VIDEO_SIZE)
+    const thumbnail=useFileInput(MAX_THUMBNAIL_SIZE)
+
+    useEffect(()=>{
+      if(video.duration!=null)
+      {
+        setVideouration(video.duration)
+      }
+    },[videoDuration])
+
+    const uploadVideoToBunny=(file:File,uploadUrl:string,accessKey:string):Promise<void>=>
+      fetch(uploadUrl,{
+        method:'PUT',
+        headers:{
+          'Content-Type': file.type,
+          AccessKey:accessKey
+        },
+        body: file,
+      }).then((response)=>{
+          if(!response.ok)
+          {
+            throw new Error(`Upload failed with status ${response.status}`);
+          }
+    })
+
+
+
     const handleInputChange=(e:ChangeEvent<HTMLInputElement|HTMLTextAreaElement|HTMLSelectElement>)=>{
         const {name,value}=e.target
         setFormData((prevState)=>({...prevState,[name]:value}))
     }
 
-    const handleSubmit=(e:FormEvent)=>
+    const handleSubmit=async(e:FormEvent)=>
     {
       e.preventDefault()
       setIsSubmitting(true)
@@ -33,18 +68,50 @@ const page = () => {
         if(!formData.title||!formData.description)
         {
             setError('Please upload fill in all the details')
+            return
         }
+
+        // get the upload url
+          const {videoId,
+            uploadUrl:videoUploadUrl,
+            accessKey:videAccessKey
+          }=await getVideoUploadUrl()
+
+        //UPLOAD VIDEO TO BUNNY
+        await uploadVideoToBunny(video.file,videoUploadUrl,videAccessKey)
         
-      } catch (error) {
+        const{uploadUrl:thumbUploadUrl,
+          cdnUrl:thumbnailCdnUrl,
+          accessKey:thumnailAccessKey
+        }=await thumbnailUploadUrl(videoId)
+
+        await uploadVideoToBunny(thumbnail.file,thumbUploadUrl,thumnailAccessKey)
+
+        await saveVideoDetails({
+          videoId,
+          ...formData,
+          thumbnailUrl:thumbUploadUrl,
+          duration: videoDuration
+        })
+
+        router.push(`videos/${videoId}`)
         
+      } 
+      catch (error) 
+      {
+        console.error("Error submitting form:", error);
+        
+      }
+      finally
+      {
+        setIsSubmitting(false);
       }
 
 
     }
 
-    const video=useFileInput(MAX_VIDEO_SIZE)
-    const thumbnail=useFileInput(MAX_THUMBNAIL_SIZE)
 
+  
     
   return (
     <div className='wrapper-md upload-page'>
