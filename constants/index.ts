@@ -5,6 +5,15 @@ export const MAX_VIDEO_SIZE=500*1024*1024
 export const MAX_THUMBNAIL_SIZE=10*1024*1024
 
 
+export const BUNNY={
+  STREAM_BASE_URL:"https://video.bunnycdn.com/library",
+  EMBED_URL:"https://video.bunnycdn.com/library",
+  STORAGE_BASE_URL:"https://storage.bunnycdn.com/screeny",
+  CDN_URL:"https://screeny.b-cdn.net",
+  TRANSCRIPT_URL:"https://vz-5c48d939-82e.b-cdn.net"
+}
+
+
 
 export const ICONS={
     record:"/assets/icons/record.svg",
