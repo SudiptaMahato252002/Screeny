@@ -1,5 +1,7 @@
 import { unknown } from "better-auth"
+import { ilike, sql } from "drizzle-orm";
 import { url } from "inspector"
+import { videos } from "@/drizzle/schema";
 
 interface ApiFetchOptions {
   method?: string;
@@ -77,3 +79,23 @@ export const apiFetch=async <T=Record<string,unknown>>(
   return await response.json();
 
 }
+
+
+export const getOrderByClause=(filter?:string)=>{
+  switch (filter){
+    case 'Most Viewed':
+      return sql`${videos.views} DESC`
+    case 'Least Viewed':
+      return sql`${videos.views} ASC`
+    case "Oldest First":
+      return sql`${videos.createdAt} ASC`;
+    case "Most Recent":
+    default:
+      return sql`${videos.createdAt} DESC`
+  }
+}
+
+export const doesTitleMatch=(videos:any,searchQuery:string)=>
+  ilike(sql`REPLACE(REPLACE(REPLACE(LOWER(${videos.title}),'-',''),'.',''),' ','')`,
+    `%${searchQuery.replace(/[-. ]/g,'').toLowerCase()}%`
+  )
