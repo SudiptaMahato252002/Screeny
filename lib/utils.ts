@@ -1,7 +1,8 @@
 import { unknown } from "better-auth"
-import { ilike, sql } from "drizzle-orm";
+import { ilike, sql,eq } from "drizzle-orm";
 import { url } from "inspector"
-import { videos } from "@/drizzle/schema";
+import { user, videos } from "@/drizzle/schema";
+import { db } from "@/drizzle/db";
 
 interface ApiFetchOptions {
   method?: string;
@@ -93,6 +94,16 @@ export const getOrderByClause=(filter?:string)=>{
     default:
       return sql`${videos.createdAt} DESC`
   }
+}
+
+export const buildWithUserQuery=()=>{
+    return db.select({
+        video:videos,
+        user:{id: user.id,name: user.name, image: user.image}
+    })
+    .from(videos)
+    .leftJoin(user,eq(videos.userId,user.id))
+
 }
 
 export const doesTitleMatch=(videos:any,searchQuery:string)=>

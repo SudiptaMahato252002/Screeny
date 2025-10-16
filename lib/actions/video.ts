@@ -2,7 +2,7 @@
 
 import { headers } from "next/headers"
 import { auth } from "../auth"
-import { apiFetch, doesTitleMatch, getEnv, getOrderByClause, withErrorHandling } from "../utils"
+import { apiFetch, buildWithUserQuery, doesTitleMatch, getEnv, getOrderByClause, withErrorHandling } from "../utils"
 import { BUNNY } from "@/constants"
 import { db } from "@/drizzle/db"
 import { user, videos } from "@/drizzle/schema"
@@ -49,14 +49,8 @@ export const revalidatePaths=async(paths:string[])=>{
 
 }
 
-export const buildWithUserQuery=()=>
-    db.select({
-        video:videos,
-        user:{id: user.id,name: user.name, image: user.image}
-    })
-    .from(videos)
-    .leftJoin(user,eq(videos.userId,user.id))
 
+    
 export const getSessionUserId=async()=>{
     const session=await auth.api.getSession({headers:await headers()})
     if(!session)
@@ -184,5 +178,15 @@ export const getAllVideos=withErrorHandling(async(
         )
         .limit(pageSize)
         .offset((pageNumber-1)*pageSize)
+
+        return{
+            videos:videoRecords,
+            pagination:{
+                currentPage:pageNumber,
+                totalPages,
+                totalVideos,
+                pageSize
+            }
+        }
 
 })

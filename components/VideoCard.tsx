@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 import React from 'react'
 
-type Visibility="public"|"private"
+type Visibility="public"|"private"|string
 
 const visibilities:Visibility[]= ["public", "private"]
 export interface VideoCardProps
@@ -17,7 +17,7 @@ export interface VideoCardProps
     createdAt:Date;
     views:number;
     visibility:Visibility;
-    duration:number;
+    duration:number|null;
 }
 
 
