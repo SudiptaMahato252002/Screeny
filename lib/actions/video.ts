@@ -72,7 +72,7 @@ export const validateWithArcjet=async(fingerprint:string)=>{
 
     const req=await request()
     const decision=await ratelimit.protect(req,{fingerprint:fingerprint})
-    if(!decision.isDenied())
+    if(decision.isDenied())
     {
         throw new Error("Rate Limit Exceeded")
     }
@@ -113,9 +113,10 @@ export const thumbnailUploadUrl=withErrorHandling(async(videoId:string)=>{
 })
 
 export const saveVideoDetails=withErrorHandling(async(videoDetails:VideoDetails)=>{
+    console.log(videoDetails)
     const userId=await getSessionUserId()
 
-    await validateWithArcjet(userId)
+    // await validateWithArcjet(userId)
     await apiFetch(
         `${VIDEO_STREAM_BASE_URL}/${BUNNY_LIBRARY_ID}/videos/${videoDetails.videoId}`,
         {
@@ -127,8 +128,12 @@ export const saveVideoDetails=withErrorHandling(async(videoDetails:VideoDetails)
             }
         }
     )
+    console.log(videoDetails)
     const now=new Date();
-    await db.insert(videos).values({
+
+    try 
+    {
+        await db.insert(videos).values({
         title: videoDetails.title,
         description: videoDetails.description,
         videoId: videoDetails.videoId,
@@ -137,8 +142,15 @@ export const saveVideoDetails=withErrorHandling(async(videoDetails:VideoDetails)
         visibility: videoDetails.visibility,
         userId,
         createdAt: now,
-        updatedAt: now
+        updatedAt: now,
+        duration: videoDetails.duration??null
     })
+        
+    } catch (error) {
+        console.log('ERROR IN UPLOADING DATA TO DB')  
+        throw error
+    }
+    
 
     revalidatePaths(['/'])
     return {videoId: videoDetails.videoId}

@@ -87,14 +87,16 @@ const page = () => {
 
         await uploadVideoToBunny(thumbnail.file,thumbUploadUrl,thumnailAccessKey)
 
-        await saveVideoDetails({
+        console.log('SAVING DETAILS IN DB....')
+        const vId=await saveVideoDetails({
           videoId,
           ...formData,
-          thumbnailUrl:thumbUploadUrl,
+          thumbnailUrl:thumbnailCdnUrl,
           duration: videoDuration
         })
+         console.log('SUCESSFULLY SAVED THE DETAILS')
 
-        router.push(`videos/${videoId}`)
+        router.push(`videos/${vId}`)
         
       } 
       catch (error) 

@@ -18,7 +18,7 @@ const page = async(searchParams:Promise<Record<string,string|undefined>>) => {
       <h1 className='text-2xl font-karla'>Welcome to Screeny</h1>
       {
         videos?.length>0?(
-          <section>
+          <section className='video-grid'>
             {videos.map(({video,user})=>
               (<VideoCard
                 key={video.id}
