@@ -96,7 +96,7 @@ const page = () => {
         })
          console.log('SUCESSFULLY SAVED THE DETAILS')
 
-        router.push(`videos/${vId}`)
+        router.push(`videos/${videoId}`)
         
       } 
       catch (error) 

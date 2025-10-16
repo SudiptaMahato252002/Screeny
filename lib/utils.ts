@@ -110,3 +110,8 @@ export const doesTitleMatch=(videos:any,searchQuery:string)=>
   ilike(sql`REPLACE(REPLACE(REPLACE(LOWER(${videos.title}),'-',''),'.',''),' ','')`,
     `%${searchQuery.replace(/[-. ]/g,'').toLowerCase()}%`
   )
+
+  export const createIframeLink=(videoId:string)=>
+  {
+    return `https://iframe.mediadelivery.net/embed/${getEnv('BUNNY_LIBRARY_ID')}/${videoId}?autoplay=true&preload=true`
+  }

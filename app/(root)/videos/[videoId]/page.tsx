@@ -1,8 +1,26 @@
+import VideoPlayer from '@/components/VideoPlayer'
+import { getVideoById } from '@/lib/actions/video'
+import { redirect } from 'next/navigation'
 import React from 'react'
 
-const page = () => {
+interface Params
+{
+  params:Promise<Record<string,string>>
+}
+const page = async({params}:Params) => {
+  const {videoId}=await params
+  const {video,user}=await getVideoById(videoId)
+
+  if(!video)redirect('/404')
+
   return (
-    <div>Video Page</div>
+    <main className='wrapper-page'>
+      <section className='video-details'>
+        <div className='content'>
+          <VideoPlayer videoId={video.videoId} ></VideoPlayer>
+        </div>
+      </section>
+    </main>
   )
 }
 
