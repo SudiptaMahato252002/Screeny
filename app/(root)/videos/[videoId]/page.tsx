@@ -1,4 +1,6 @@
+
 import VideoPlayer from '@/components/VideoPlayer'
+import VideoDetailHeader from '@/components/VideoDetailHeader'
 import { getVideoById } from '@/lib/actions/video'
 import { redirect } from 'next/navigation'
 import React from 'react'
@@ -14,7 +16,16 @@ const page = async({params}:Params) => {
   if(!video)redirect('/404')
 
   return (
-    <main className='wrapper-page'>
+    <main className='wrapper page'>
+      <VideoDetailHeader 
+        videoId={video.videoId}
+        title={video.title} 
+        ownerId={video.userId} 
+        thumnailUrl={video.thumbnailUrl} 
+        createdAt={video.createdAt} 
+        username={user?.name} 
+        userImg={user?.image} 
+        visibility={video.visibility}></VideoDetailHeader>
       <section className='video-details'>
         <div className='content'>
           <VideoPlayer videoId={video.videoId} ></VideoPlayer>

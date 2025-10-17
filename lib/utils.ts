@@ -115,3 +115,26 @@ export const doesTitleMatch=(videos:any,searchQuery:string)=>
   {
     return `https://iframe.mediadelivery.net/embed/${getEnv('BUNNY_LIBRARY_ID')}/${videoId}?autoplay=true&preload=true`
   }
+
+  export const daysAgo=(inputDate:Date):string=>
+  {
+
+    const input=new Date(inputDate)
+    const now=new Date()
+
+    const diffTime=now.getTime()-input.getTime()
+    const diffDay=Math.floor(diffTime/(1000*60*60*24))
+
+    if (diffDay <= 0) 
+    { 
+      return "Today"; 
+    } 
+    else if (diffDay === 1) 
+    { 
+      return "1 day ago"; 
+    }
+    else
+    { 
+      return `${diffDay} days ago`; 
+    }
+  }

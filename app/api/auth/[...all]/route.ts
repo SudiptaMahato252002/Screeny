@@ -62,21 +62,21 @@ const authHandler=toNextJsHandler(auth.handler)
 export const {GET}=authHandler;
 
 export const POST=async(req:NextRequest)=>{
-    const decison=await protectedAuth(req)
-    if(decison.isDenied())
-    {
-        if(decison.reason.isEmail())
-        {
-            throw new Error('Email Validation failed')
-        }
-        if(decison.reason.isRateLimit())
-        {
-            throw new Error('rate limit exceeded')
-        }
-        if(decison.reason.isShield())
-        {
-            throw new Error("Shield validation failed")
-        }
-    }
+    // const decison=await protectedAuth(req)
+    // if(decison.isDenied())
+    // {
+    //     if(decison.reason.isEmail())
+    //     {
+    //         throw new Error('Email Validation failed')
+    //     }
+    //     if(decison.reason.isRateLimit())
+    //     {
+    //         throw new Error('rate limit exceeded')
+    //     }
+    //     if(decison.reason.isShield())
+    //     {
+    //         throw new Error("Shield validation failed")
+    //     }
+    // }
     return authHandler.POST(req)
 }
