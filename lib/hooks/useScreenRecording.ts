@@ -1,5 +1,5 @@
 import { useRef, useState } from "react"
-import { calculateRecordingDuration, cleanUpRecording, createAudioMixer, creatRecordingBlob, getMediaStream, setUpRecording } from "../utils";
+import { calculateRecordingDuration, cleanUpRecording, createAudioMixer, creatRecordingBlob, getMediaStream, setUpRecording } from "../recording";
 
 interface BunnyRecordingState
 {
