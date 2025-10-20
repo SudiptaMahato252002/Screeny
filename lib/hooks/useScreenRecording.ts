@@ -18,7 +18,7 @@ interface ExtendedMediaStream extends MediaStream
 
 
 
-export const userScreenRexording=()=>{
+export const useScreenRecording=()=>{
 
     const [state,setState]=useState<BunnyRecordingState>({
         isRecording:false,

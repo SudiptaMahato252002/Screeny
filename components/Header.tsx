@@ -3,6 +3,7 @@ import Image from "next/image"
 import Link from 'next/link'
 import { ICONS } from '@/constants'
 import Dropdown from './Dropdown'
+import RecordScreen from './RecordScreen'
 
 declare interface ShareHeadderPrpos
 {
@@ -33,12 +34,7 @@ const Header = ({subHeader,title,userImg}:ShareHeadderPrpos) => {
                     <span className='truncate'>Upload a video</span>
                 </Link> 
                 
-                <div className='record'>
-                    <button className='primary-btn hover:bg-pink-700'>
-                        <Image src={ICONS.record} alt='record' width={16} height={16}></Image>
-                        <span className='truncate'>Record</span>
-                    </button>
-                </div>
+                <RecordScreen/>
             </aside>
         </section>
 
