@@ -4,6 +4,7 @@ import React, { useRef, useState } from 'react'
 import Image from 'next/image'
 import { useScreenRecording } from '@/lib/hooks/useScreenRecording'
 import { useRouter } from 'next/navigation'
+import { duration } from 'drizzle-orm/gel-core'
 const RecordScreen = () => {
 
     const [isOpen, setisOpen] = useState(false)
@@ -35,7 +36,20 @@ const RecordScreen = () => {
         }
     }
     const goToUpload=()=>{
-
+        if(!recordedBlob)return
+        const url=URL.createObjectURL(recordedBlob)
+        sessionStorage.setItem(
+            "recordedVideo",
+            JSON.stringify({
+                url,
+                name:'screen-recordig.webm',
+                type:recordedBlob.type,
+                size:recordedBlob.size,
+                duration:recordingDuration||0
+            })
+        )
+        router.push('/upload')
+        closeModal()
     }
 
   return (
@@ -59,7 +73,7 @@ const RecordScreen = () => {
 
                                 </div>
                                 <span>Recording in progress</span>
-                            </article>):recordingUploadUrl?(<video ref={videoRef} src={recordingUploadUrl}/>):(<p>Click record to start capturing your screen</p>)}
+                            </article>):recordingUploadUrl?(<video ref={videoRef} src={recordingUploadUrl} controls/>):(<p>Click record to start capturing your screen</p>)}
                         </section>
                         <div className='record-box'>
                             {!isRecording&&!recordingUploadUrl&&(

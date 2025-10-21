@@ -4,7 +4,6 @@ import FormField from '@/components/FormField'
 import { MAX_THUMBNAIL_SIZE, MAX_VIDEO_SIZE } from '@/constants'
 import { getVideoUploadUrl, saveVideoDetails, thumbnailUploadUrl } from '@/lib/actions/video'
 import { useFileInput } from '@/lib/hooks/useFileInput'
-import { duration } from 'drizzle-orm/gel-core'
 import { useRouter } from 'next/navigation'
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react'
 
@@ -30,6 +29,48 @@ const page = () => {
         setVideouration(video.duration)
       }
     },[videoDuration])
+
+    useEffect(()=>{
+      const checkForRecordedVideo=async()=>{
+        try {
+          const stored=sessionStorage.getItem('recordedVideo')
+          if(!stored)
+          {
+            return
+          }
+          const {url,name,type,duration}=JSON.parse(stored)
+          const blob=await fetch(url).then((res)=>res.blob())
+          const file=new File([blob],name,{type,lastModified:Date.now()})
+
+          if(video.inputRef.current)
+          {
+              const dataTransfer=new DataTransfer()
+              dataTransfer.items.add(file)
+              video.inputRef.current.files=dataTransfer.files
+               
+              
+              const event=new Event("change",{bubbles:true})         
+              video.inputRef.current?.dispatchEvent(event)
+              video.handleFileChange({
+                target: { files: dataTransfer.files },
+              } as ChangeEvent<HTMLInputElement>);
+          }
+          
+
+         
+
+          if(duration)setVideouration(duration)
+          sessionStorage.removeItem("recordedVideo")
+          URL.revokeObjectURL(url)
+
+        } catch (error) {
+          console.error("Error loading recorded video",error)
+        }
+      }
+       checkForRecordedVideo();
+    },[video])
+
+
 
     const uploadVideoToBunny=(file:File,uploadUrl:string,accessKey:string):Promise<void>=>
       fetch(uploadUrl,{

@@ -1,4 +1,4 @@
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { calculateRecordingDuration, cleanUpRecording, createAudioMixer, creatRecordingBlob, getMediaStream, setUpRecording } from "../recording";
 
 interface BunnyRecordingState
@@ -32,6 +32,17 @@ export const useScreenRecording=()=>{
     const chunksRef=useRef<Blob[]>([]);
     const audioContextRef=useRef<AudioContext|null>(null);
     const startTimeRef=useRef<number|null>(null);
+
+
+    useEffect(() => {
+    return () => {
+      stopRecording();
+      if (state.recordingUploadUrl) URL.revokeObjectURL(state.recordingUploadUrl);
+      if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
+        audioContextRef.current.close().catch(console.error);
+      }
+    };
+  }, [state.recordingUploadUrl]);
     
     const handleRecordingStop=()=>{
         const {blob,url}=creatRecordingBlob(chunksRef.current)
@@ -40,7 +51,7 @@ export const useScreenRecording=()=>{
         setState((prev) => ({
       ...prev,
       recordedBlob: blob,
-      recordedVideoUrl: url,
+      recordingUploadUrl: url,
       recordingDuration: duration,
       isRecording: false,
     }));
@@ -92,6 +103,11 @@ export const useScreenRecording=()=>{
     {
         cleanUpRecording(mediaRecorderRef.current,streamRef.current,streamRef?.current?._originalStreams)
         streamRef.current=null
+
+        if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
+        audioContextRef.current.close().catch(console.error);
+        audioContextRef.current = null;
+    }
         
         setState((prev)=>({...prev,isRecording:false}))
 
